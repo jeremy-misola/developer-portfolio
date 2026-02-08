@@ -29,9 +29,11 @@ function Experience() {
       try {
         const response = await fetch("/api/experience");
         const data = await response.json();
-        setExperience(data);
+        // Ensure experience is always an array
+        setExperience(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching experience:", error);
+        setExperience([]);
       } finally {
         setLoading(false);
       }

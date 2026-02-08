@@ -30,9 +30,11 @@ function Projects() {
       try {
         const response = await fetch("/api/projects");
         const data = await response.json();
-        setProjects(data);
+        // Ensure projects is always an array
+        setProjects(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching projects:", error);
+        setProjects([]);
       } finally {
         setLoading(false);
       }

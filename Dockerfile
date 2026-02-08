@@ -1,20 +1,37 @@
-FROM node:24-alpine AS deps
-WORKDIR /portfolio
-COPY portfolio/package*.json .
-RUN npm install
+# Stage 1: Build the application
+FROM node:20-alpine AS builder
 
-FROM node:24-alpine AS builder
-WORKDIR /portfolio
-COPY --from=deps /portfolio/node_modules ./node_modules
-COPY portfolio/src ./src
-COPY portfolio/public ./public
-COPY portfolio/package.json portfolio/next.config.mjs portfolio/postcss.config.mjs portfolio/jsconfig.json ./
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application files
+COPY . .
+
+# Build the application
 RUN npm run build
 
-FROM node:24-alpine
-WORKDIR /portfolio
-COPY --from=builder /portfolio/.next ./.next
-COPY --from=builder /portfolio/public ./public
-COPY --from=builder /portfolio/node_modules ./node_modules
-COPY --from=builder /portfolio/package.json ./
-CMD ["npm", "run", "start"]
+# Stage 2: Production image
+FROM node:20-alpine AS production
+
+# Set working directory
+WORKDIR /app
+
+# Copy built files from builder stage
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]

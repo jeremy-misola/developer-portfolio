@@ -21,7 +21,7 @@ function Testimonials() {
         if (response.ok) {
           const data = await response.json();
           // Filter for approved testimonials only
-          const approvedTestimonials = data.filter(t => t.status === "approved");
+          const approvedTestimonials = Array.isArray(data) ? data.filter(t => t.status === "approved") : [];
           setTestimonials(approvedTestimonials);
         } else if (response.status === 401) {
           // Authentication failed, try fallback method
@@ -43,7 +43,7 @@ function Testimonials() {
         
         if (response.ok) {
           const data = await response.json();
-          setTestimonials(data);
+          setTestimonials(Array.isArray(data) ? data : []);
         } else {
           throw new Error("Fallback API also failed");
         }
