@@ -1,0 +1,83 @@
+import { NextResponse } from 'next/server';
+import { validateAdminCredentials, generateSessionToken, addActiveSession } from '@/lib/admin';
+
+export async function POST(request) {
+  try {
+    const { username, password } = await request.json();
+
+    if (!username || !password) {
+      return NextResponse.json(
+        { error: 'Username and password are required' },
+        { status: 400 }
+      );
+    }
+
+    const isValid = validateAdminCredentials(username, password);
+
+    if (!isValid) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      );
+    }
+
+    const sessionToken = generateSessionToken();
+    
+    // Add session to active sessions
+    addActiveSession(sessionToken);
+    
+    const response = NextResponse.json({
+      success: true,
+      message: 'Login successful'
+    });
+
+    // Set secure cookie
+    response.cookies.set('admin_session', sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+      path: '/'
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Auth error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const response = NextResponse.json({
+      success: true,
+      message: 'Logout successful'
+    });
+
+    // Clear the session from active sessions
+    const sessionToken = request.cookies.get('admin_session')?.value;
+    if (sessionToken) {
+      removeActiveSession(sessionToken);
+    }
+
+    // Clear the session cookie
+    response.cookies.set('admin_session', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 0,
+      path: '/'
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Logout error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
