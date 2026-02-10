@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { Shield, Mail, Lock, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -130,7 +130,7 @@ export default function AdminLogin() {
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground text-center">
                 Demo Credentials:<br />

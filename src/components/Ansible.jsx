@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -27,13 +28,11 @@ import {
 const configSteps = [
   {
     icon: <ShieldCheck className="h-8 w-8 text-primary" />,
-    title: "System Hardening",
-    description: "Run system-wide updates to keep servers patched and secure.",
+    key: "hardening",
   },
   {
     icon: <UserPlus className="h-8 w-8 text-primary" />,
-    title: "User Management",
-    description: "Easily add new administrative users with SSH access.",
+    key: "management",
   },
 ];
 
@@ -91,22 +90,21 @@ const CodeBlock = ({ children }) => (
 
 // --- Main Component ---
 export default function Ansible() {
+  const t = useTranslations("Ansible");
+
   return (
     <section id="provisioning" className="w-full bg-background py-16 md:py-24 scroll-mt-24">
       <div className="container mx-auto max-w-5xl px-4">
         {/* Header */}
         <div className="mb-12 text-center">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold">
-            Terraform + Ansible
+            {t("badge")}
           </Badge>
           <h2 className="font-sans text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-            Automating Server Administration with Ansible
+            {t("title")}
           </h2>
           <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-            After provisioning VMs with{" "}
-            <span className="font-semibold text-primary/90">Terraform</span>,
-            Ansible handles ongoing server administration tasks like user management
-            and system updates.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -114,7 +112,7 @@ export default function Ansible() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
           {configSteps.map((step) => (
             <Card
-              key={step.title}
+              key={step.key}
               className="transform-gpu transition-transform duration-300 hover:scale-105 hover:shadow-lg"
             >
               <CardHeader className="items-center pb-4">
@@ -124,10 +122,10 @@ export default function Ansible() {
               </CardHeader>
               <CardContent className="text-center">
                 <CardTitle className="mb-1 text-base font-semibold">
-                  {step.title}
+                  {t(`steps.${step.key}.title`)}
                 </CardTitle>
                 <CardDescription className="text-sm">
-                  {step.description}
+                  {t(`steps.${step.key}.description`)}
                 </CardDescription>
               </CardContent>
             </Card>
@@ -140,18 +138,16 @@ export default function Ansible() {
             <div className="flex items-center justify-center">
               <Terminal className="mr-3 h-6 w-6 text-muted-foreground" />
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="addUser">Add User</TabsTrigger>
-                <TabsTrigger value="updateServers">System Update</TabsTrigger>
+                <TabsTrigger value="addUser">{t("tabs.addUser.trigger")}</TabsTrigger>
+                <TabsTrigger value="updateServers">{t("tabs.updateServers.trigger")}</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="addUser">
               <Card className="border-border/60 shadow-md">
                 <CardHeader>
-                  <CardTitle>On-Demand User Creation</CardTitle>
+                  <CardTitle>{t("tabs.addUser.title")}</CardTitle>
                   <CardDescription>
-                    This playbook prompts for a username and a public SSH key to
-                    create a new sudo-enabled user on all servers, simplifying
-                    access management.
+                    {t("tabs.addUser.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -162,10 +158,9 @@ export default function Ansible() {
             <TabsContent value="updateServers">
               <Card className="border-border/60 shadow-md">
                 <CardHeader>
-                  <CardTitle>Centralized System Updates</CardTitle>
+                  <CardTitle>{t("tabs.updateServers.title")}</CardTitle>
                   <CardDescription>
-                    Run this simple playbook to update the package cache and
-                    upgrade all packages on every server in your inventory.
+                    {t("tabs.updateServers.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -187,9 +182,11 @@ export default function Ansible() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github className="mr-3 h-5 w-5" />
-              Explore Ansible Playbooks
-              <ArrowRight className="ml-3 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              <div className="flex items-center">
+                <Github className="mr-3 h-5 w-5" />
+                {t("footer.button")}
+                <ArrowRight className="ml-3 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </div>
             </a>
           </Button>
         </div>

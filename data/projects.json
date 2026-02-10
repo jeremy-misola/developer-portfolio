@@ -2,7 +2,8 @@
   {
     "id": "1",
     "title": "Cloud-Native Portfolio",
-    "description": "A live, cloud-native portfolio showcasing Kubernetes, GitOps, monitoring, and automation. Built with Next.js and deployed on a self-managed K3s cluster.",
+    "description_en": "A live, cloud-native portfolio showcasing Kubernetes, GitOps, monitoring, and automation. Built with Next.js and deployed on a self-managed K3s cluster.",
+    "description_fr": "Un portfolio cloud-native en direct présentant Kubernetes, GitOps, la surveillance et l'automatisation. Construit avec Next.js et déployé sur un cluster K3s auto-géré.",
     "technologies": [
       "Next.js",
       "Kubernetes",
@@ -16,7 +17,7 @@
     "status": "completed",
     "priority": 1,
     "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-03-20T14:20:00Z",
+    "updatedAt": "2026-02-10T14:20:00Z",
     "images": [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800",
       "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800"
@@ -24,46 +25,47 @@
   },
   {
     "id": "2",
-    "title": "Kubernetes Cluster Management",
-    "description": "Automated Kubernetes cluster provisioning and management using Terraform and Ansible. Includes monitoring stack with Prometheus and Grafana.",
+    "title": "Distributed Observability & Resilience Lab",
+    "description_en": "Architected a distributed monitoring pipeline using the LGTM stack to track the Four Golden Signals across a microservice mesh. Designed and executed Chaos Engineering experiments to validate Istio's circuit-breaking and outlier detection thresholds.",
+    "description_fr": "Architecture d'un pipeline de surveillance distribué utilisant la pile LGTM pour suivre les quatre signaux d'or à travers un maillage de microservices. Conception et exécution d'expériences d'ingénierie du chaos pour valider les seuils de coupure de circuit et de détection des valeurs aberrantes d'Istio.",
     "technologies": [
-      "Kubernetes",
-      "Terraform",
-      "Ansible",
-      "Prometheus",
-      "Grafana",
-      "Helm"
+      "LGTM Stack",
+      "OpenTelemetry",
+      "Chaos Mesh",
+      "Istio",
+      "Go"
     ],
-    "githubUrl": "https://github.com/jeremy-misola/k8s-cluster",
+    "githubUrl": "https://github.com/jeremy-misola/observability-lab",
     "demoUrl": null,
     "status": "completed",
     "priority": 2,
-    "createdAt": "2024-02-10T09:15:00Z",
-    "updatedAt": "2024-03-15T11:45:00Z",
+    "createdAt": "2025-10-01T09:15:00Z",
+    "updatedAt": "2026-02-10T11:45:00Z",
     "images": [
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800"
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800"
     ]
   },
   {
     "id": "3",
-    "title": "GitOps CI/CD Pipeline",
-    "description": "Complete GitOps workflow with automated CI/CD using GitHub Actions and ArgoCD. Features automated testing, security scanning, and deployment.",
+    "title": "Automated Bare-Metal Cloud",
+    "description_en": "Utilized Terraform providers and Ansible playbooks to provision a High-Availability K3s cluster on Proxmox. Implemented Longhorn distributed storage with automated backup policies and centralized IAM with Authentik.",
+    "description_fr": "Utilisation des fournisseurs Terraform et des playbooks Ansible pour provisionner un cluster K3s à haute disponibilité sur Proxmox. Mise en œuvre du stockage distribué Longhorn avec des politiques de sauvegarde automatisées et un IAM centralisé avec Authentik.",
     "technologies": [
-      "GitHub Actions",
-      "ArgoCD",
-      "Docker",
-      "Kubernetes",
-      "SonarQube",
-      "Trivy"
+      "Terraform",
+      "Proxmox",
+      "K3s",
+      "Longhorn",
+      "Authentik",
+      "Ansible"
     ],
-    "githubUrl": "https://github.com/jeremy-misola/gitops-pipeline",
+    "githubUrl": "https://github.com/jeremy-misola/GitOps-Homelab",
     "demoUrl": null,
-    "status": "in-progress",
+    "status": "completed",
     "priority": 3,
-    "createdAt": "2024-03-01T16:45:00Z",
-    "updatedAt": "2024-03-25T13:20:00Z",
+    "createdAt": "2025-07-01T16:45:00Z",
+    "updatedAt": "2026-02-10T13:20:00Z",
     "images": [
-      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800"
+      "https://images.unsplash.com/photo-1667372393119-c85c020759cc?w=800"
     ]
   }
 ]

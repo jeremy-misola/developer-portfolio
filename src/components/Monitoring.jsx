@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip as ShadTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Server, ShieldCheck, Info, LayoutGrid, LineChart as LineChartIcon, Activity, AlertCircle, TrafficCone, FileClock } from 'lucide-react';
@@ -115,6 +116,7 @@ const StatusCard = ({ icon, title, value, status, badgeStyle, description, toolt
 // --- Main Monitoring Dashboard Component ---
 
 export default function MonitoringDashboardWithTabs() {
+  const t = useTranslations("Monitoring");
   const apiData = mockApiData;
 
   const successBadgeStyle = { backgroundColor: 'var(--chart-3)', color: 'var(--foreground)' };
@@ -124,31 +126,31 @@ export default function MonitoringDashboardWithTabs() {
     <section id="monitoring" className="p-4 md:p-8 scroll-mt-24" style={{ backgroundColor: 'var(--background)' }}>
       <div className="container mx-auto">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Live Operations Dashboard</h2>
+          <h2 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>{t("title")}</h2>
           <p className="mt-2 max-w-2xl mx-auto" style={{ color: 'var(--muted-foreground)' }}>
-            This dashboard provides a real-time view into the application's live performance and infrastructure health, served by a Go meta-API.
+            {t("subtitle")}
           </p>
           {/* --- ADDED NOTE --- */}
           {/* --- END OF ADDED NOTE --- */}
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 mb-8">
-          <StatusCard icon={<Server className="h-4 w-4" style={{ color: 'var(--muted-foreground)' }} />} title="Active Pod" value={apiData.infraStatus.podName.split('-').slice(-1)[0]} status={apiData.infraStatus.namespace} badgeStyle={outlineBadgeStyle} description={`on ${apiData.infraStatus.nodeName}`} tooltipText="Pod & Node info from the K8s Downward API." />
-          <StatusCard icon={<ShieldCheck className="h-4 w-4" style={{ color: 'var(--muted-foreground)' }} />} title="Application Health" value="99.9% Uptime" status="Healthy" badgeStyle={successBadgeStyle} description="Last 24 hours" tooltipText="Overall health based on uptime and error rate." />
+          <StatusCard icon={<Server className="h-4 w-4" style={{ color: 'var(--muted-foreground)' }} />} title={t("status.activePod.title")} value={apiData.infraStatus.podName.split('-').slice(-1)[0]} status={apiData.infraStatus.namespace} badgeStyle={outlineBadgeStyle} description={`on ${apiData.infraStatus.nodeName}`} tooltipText={t("status.activePod.tooltip")} />
+          <StatusCard icon={<ShieldCheck className="h-4 w-4" style={{ color: 'var(--muted-foreground)' }} />} title={t("status.health.title")} value={t("status.health.uptime")} status={t("status.health.status")} badgeStyle={successBadgeStyle} description={t("status.health.description")} tooltipText={t("status.health.tooltip")} />
         </div>
 
         <Tabs defaultValue="application" className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-            <TabsTrigger value="application"><LineChartIcon className="w-4 h-4 mr-2"/>Application</TabsTrigger>
-            <TabsTrigger value="infrastructure"><LayoutGrid className="w-4 h-4 mr-2"/>Infrastructure</TabsTrigger>
-            <TabsTrigger value="reliability"><Activity className="w-4 h-4 mr-2"/>Reliability</TabsTrigger>
-            <TabsTrigger value="events"><FileClock className="w-4 h-4 mr-2"/>Events</TabsTrigger>
+            <TabsTrigger value="application"><LineChartIcon className="w-4 h-4 mr-2" />{t("tabs.application")}</TabsTrigger>
+            <TabsTrigger value="infrastructure"><LayoutGrid className="w-4 h-4 mr-2" />{t("tabs.infrastructure")}</TabsTrigger>
+            <TabsTrigger value="reliability"><Activity className="w-4 h-4 mr-2" />{t("tabs.reliability")}</TabsTrigger>
+            <TabsTrigger value="events"><FileClock className="w-4 h-4 mr-2" />{t("tabs.events")}</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="application">
             <div className="grid gap-6 mt-6 md:grid-cols-5">
               <Card className="md:col-span-3" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
-                <CardHeader><CardTitle>HTTP Performance</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>Request throughput and P95 latency.</CardDescription></CardHeader>
+                <CardHeader><CardTitle>{t("application.http.title")}</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>{t("application.http.description")}</CardDescription></CardHeader>
                 <CardContent className="h-[350px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={apiData.httpMetrics}>
@@ -159,13 +161,13 @@ export default function MonitoringDashboardWithTabs() {
                       <Tooltip content={<CustomTooltip />} />
                       <Legend wrapperStyle={{ color: 'var(--foreground)' }} />
                       <Bar yAxisId="left" dataKey="rps" name="Requests/sec" fill="var(--chart-1)" />
-                      <Line yAxisId="right" type="monotone" dataKey="latency" name="P95 Latency" stroke="var(--chart-2)" strokeWidth={2} unit="ms"/>
+                      <Line yAxisId="right" type="monotone" dataKey="latency" name="P95 Latency" stroke="var(--chart-2)" strokeWidth={2} unit="ms" />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
               <Card className="md:col-span-2" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
-                <CardHeader><CardTitle>API Endpoint Traffic</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>Distribution of API calls by endpoint.</CardDescription></CardHeader>
+                <CardHeader><CardTitle>{t("application.traffic.title")}</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>{t("application.traffic.description")}</CardDescription></CardHeader>
                 <CardContent className="h-[350px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -183,41 +185,41 @@ export default function MonitoringDashboardWithTabs() {
           <TabsContent value="infrastructure">
             <div className="grid gap-6 mt-6 md:grid-cols-2">
               <Card className="md:col-span-2" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
-                  <CardHeader><CardTitle>Live Resource Utilization</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>CPU and Memory usage for the running pod.</CardDescription></CardHeader>
-                  <CardContent className="h-[350px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={apiData.resourceUsage}>
-                        <defs>
-                          <linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--chart-4)" stopOpacity={0.8}/><stop offset="95%" stopColor="var(--chart-4)" stopOpacity={0}/></linearGradient>
-                          <linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--chart-5)" stopOpacity={0.8}/><stop offset="95%" stopColor="var(--chart-5)" stopOpacity={0}/></linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                        <XAxis dataKey="name" stroke="var(--muted-foreground)" />
-                        <YAxis stroke="var(--muted-foreground)" />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ color: 'var(--foreground)' }} />
-                        <Area type="monotone" dataKey="cpu" name="CPU (%)" stroke="var(--chart-4)" fillOpacity={1} fill="url(#c)" unit="%" />
-                        <Area type="monotone" dataKey="memory" name="Memory (MB)" stroke="var(--chart-5)" fillOpacity={1} fill="url(#m)" unit="MB" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </CardContent>
+                <CardHeader><CardTitle>{t("infrastructure.resource.title")}</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>{t("infrastructure.resource.description")}</CardDescription></CardHeader>
+                <CardContent className="h-[350px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={apiData.resourceUsage}>
+                      <defs>
+                        <linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--chart-4)" stopOpacity={0.8} /><stop offset="95%" stopColor="var(--chart-4)" stopOpacity={0} /></linearGradient>
+                        <linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--chart-5)" stopOpacity={0.8} /><stop offset="95%" stopColor="var(--chart-5)" stopOpacity={0} /></linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                      <XAxis dataKey="name" stroke="var(--muted-foreground)" />
+                      <YAxis stroke="var(--muted-foreground)" />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend wrapperStyle={{ color: 'var(--foreground)' }} />
+                      <Area type="monotone" dataKey="cpu" name="CPU (%)" stroke="var(--chart-4)" fillOpacity={1} fill="url(#c)" unit="%" />
+                      <Area type="monotone" dataKey="memory" name="Memory (MB)" stroke="var(--chart-5)" fillOpacity={1} fill="url(#m)" unit="MB" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
               </Card>
               <Card className="md:col-span-2" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
-                  <CardHeader><CardTitle>Network Policies</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>Live Kubernetes network policy status.</CardDescription></CardHeader>
-                  <CardContent>
-                    {apiData.networkPolicies.map((policy, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg">
-                        <div className="flex items-center">
-                          <TrafficCone className="h-5 w-5 mr-3" style={{ color: 'var(--primary)' }} />
-                          <div>
-                            <p className="font-mono text-sm">{policy.name}</p>
-                            <p className="text-xs text-muted-foreground">{policy.enforces}</p>
-                          </div>
+                <CardHeader><CardTitle>{t("infrastructure.policies.title")}</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>{t("infrastructure.policies.description")}</CardDescription></CardHeader>
+                <CardContent>
+                  {apiData.networkPolicies.map((policy, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg">
+                      <div className="flex items-center">
+                        <TrafficCone className="h-5 w-5 mr-3" style={{ color: 'var(--primary)' }} />
+                        <div>
+                          <p className="font-mono text-sm">{policy.name}</p>
+                          <p className="text-xs text-muted-foreground">{policy.enforces}</p>
                         </div>
-                        <Badge variant={policy.status === 'Active' ? 'default' : 'destructive'} style={policy.status === 'Active' ? successBadgeStyle : {}}>{policy.status}</Badge>
                       </div>
-                    ))}
-                  </CardContent>
+                      <Badge variant={policy.status === 'Active' ? 'default' : 'destructive'} style={policy.status === 'Active' ? successBadgeStyle : {}}>{policy.status}</Badge>
+                    </div>
+                  ))}
+                </CardContent>
               </Card>
             </div>
           </TabsContent>
@@ -226,9 +228,9 @@ export default function MonitoringDashboardWithTabs() {
             <div className="grid gap-6 mt-6 md:grid-cols-5">
               <Card className="md:col-span-3" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
                 <CardHeader>
-                  <CardTitle>Error Budget Burn</CardTitle>
+                  <CardTitle>{t("reliability.errorBudget.title")}</CardTitle>
                   <CardDescription style={{ color: 'var(--muted-foreground)' }}>
-                    Fast (1h) vs Slow (6h) burn rates. Watch for spikes over 2x.
+                    {t("reliability.errorBudget.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[350px] w-full">
@@ -248,9 +250,9 @@ export default function MonitoringDashboardWithTabs() {
 
               <Card className="md:col-span-2" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
                 <CardHeader>
-                  <CardTitle>Synthetic Uptime</CardTitle>
+                  <CardTitle>{t("reliability.uptime.title")}</CardTitle>
                   <CardDescription style={{ color: 'var(--muted-foreground)' }}>
-                    Last 7 days uptime by region (HTTP check).
+                    {t("reliability.uptime.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[350px] w-full">
@@ -269,9 +271,9 @@ export default function MonitoringDashboardWithTabs() {
 
               <Card className="md:col-span-5" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
                 <CardHeader>
-                  <CardTitle>Alert Volume by Severity</CardTitle>
+                  <CardTitle>{t("reliability.alerts.title")}</CardTitle>
                   <CardDescription style={{ color: 'var(--muted-foreground)' }}>
-                    Distribution of Alerts fired this week.
+                    {t("reliability.alerts.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[300px] w-full">
@@ -291,30 +293,30 @@ export default function MonitoringDashboardWithTabs() {
               </Card>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="events">
             <Card className="mt-6" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
-                <CardHeader><CardTitle>Live Kubernetes Event Stream</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>A real-time feed of events from the 'production' namespace.</CardDescription></CardHeader>
-                <CardContent>
-                    <ScrollArea className="h-[350px] w-full rounded-md border p-4">
-                        {apiData.k8sEvents.map((event, index) => (
-                            <div key={index}>
-                                <div className="flex text-sm">
-                                    {event.type === 'Warning' ? 
-                                      <AlertCircle className="h-4 w-4 mr-2 mt-0.5 text-destructive" /> : 
-                                      <Info className="h-4 w-4 mr-2 mt-0.5 text-primary" />
-                                    }
-                                    <div className="grid gap-1">
-                                      <p className="font-semibold">{event.reason} <span className="font-light text-muted-foreground ml-2">{event.time}</span></p>
-                                      <p className="text-muted-foreground">{event.message}</p>
-                                    </div>
-                                </div>
-                                {/* FIX: Changed 'a' to 'apiData' to correctly reference the array being mapped */}
-                                {index < apiData.k8sEvents.length - 1 && <Separator className="my-4" />}
-                            </div>
-                        ))}
-                    </ScrollArea>
-                </CardContent>
+              <CardHeader><CardTitle>{t("events.title")}</CardTitle><CardDescription style={{ color: 'var(--muted-foreground)' }}>{t("events.description")}</CardDescription></CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[350px] w-full rounded-md border p-4">
+                  {apiData.k8sEvents.map((event, index) => (
+                    <div key={index}>
+                      <div className="flex text-sm">
+                        {event.type === 'Warning' ?
+                          <AlertCircle className="h-4 w-4 mr-2 mt-0.5 text-destructive" /> :
+                          <Info className="h-4 w-4 mr-2 mt-0.5 text-primary" />
+                        }
+                        <div className="grid gap-1">
+                          <p className="font-semibold">{event.reason} <span className="font-light text-muted-foreground ml-2">{event.time}</span></p>
+                          <p className="text-muted-foreground">{event.message}</p>
+                        </div>
+                      </div>
+                      {/* FIX: Changed 'a' to 'apiData' to correctly reference the array being mapped */}
+                      {index < apiData.k8sEvents.length - 1 && <Separator className="my-4" />}
+                    </div>
+                  ))}
+                </ScrollArea>
+              </CardContent>
             </Card>
           </TabsContent>
 

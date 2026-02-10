@@ -15,13 +15,14 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { 
-  User, 
-  Layers, 
-  Activity, 
-  GitMerge, 
+import {
+  User,
+  Layers,
+  Activity,
+  GitMerge,
   TerminalSquare
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // --- Animation Variants (enhanced) ---
 const containerVariants = {
@@ -68,11 +69,11 @@ function NavItem({ href, title, description, icon, className = "" }) {
     >
       {/* Gradient aura on hover (visual flourish) */}
       <div className="pointer-events-none absolute inset-0 rounded-xl opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-60"
-           aria-hidden="true"
-           style={{
-             background:
-               "radial-gradient(60% 50% at 50% 0%, hsl(var(--primary)/0.25) 0%, transparent 60%), radial-gradient(60% 50% at 0% 100%, hsl(var(--primary)/0.2) 0%, transparent 60%)",
-           }}
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 50% 0%, hsl(var(--primary)/0.25) 0%, transparent 60%), radial-gradient(60% 50% at 0% 100%, hsl(var(--primary)/0.2) 0%, transparent 60%)",
+        }}
       />
 
       <Card className="relative h-full flex flex-col overflow-hidden rounded-xl border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:border-primary/50">
@@ -115,6 +116,8 @@ function NavItem({ href, title, description, icon, className = "" }) {
 
 // --- Navigation Component (enhanced visuals) ---
 function Navigation() {
+  const t = useTranslations("Navigation");
+
   return (
     <section id="navigation" className="relative py-24" aria-labelledby="navigation-heading">
       {/* Decorative blurred gradient background for the section */}
@@ -129,7 +132,7 @@ function Navigation() {
 
       <h2 id="navigation-heading" className="mb-12 text-center text-4xl font-bold tracking-tight">
         <span className="relative inline-block">
-          Explore the Stack
+          {t("title")}
           {/* Animated underline */}
           <motion.span
             className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-primary/60"
@@ -146,52 +149,61 @@ function Navigation() {
         initial="hidden"
         animate="visible"
       >
+        {/* Row 1 */}
         <NavItem
           href="#about"
-          title="About Me"
-          description="My background, skills, and resume."
+          title={t("about.title")}
+          description={t("about.description")}
           icon={User}
           className="md:col-span-1"
         />
         <NavItem
           href="#experience"
-          title="Professional Experience"
-          description="My journey in DevOps and cloud-native technologies."
+          title={t("experience.title")}
+          description={t("experience.description")}
           icon={User}
-          className="md:col-span-1"
-        />
-        <NavItem
-          href="#cluster"
-          title="Live Kubernetes Cluster"
-          description="An interactive map of the K3s cluster this portfolio runs on."
-          icon={Layers}
           className="md:col-span-2"
         />
-        <NavItem
-          href="#monitoring"
-          title="Live Monitoring"
-          description="See real-time performance metrics from Prometheus & Grafana."
-          icon={Activity}
-          className="md:col-span-2"
-        />
+
+        {/* Row 2 */}
         <NavItem
           href="#gitops"
-          title="GitOps & CI/CD"
-          description="The automated GitOps workflow with ArgoCD."
+          title={t("gitops.title")}
+          description={t("gitops.description")}
           icon={GitMerge}
           className="md:col-span-1"
         />
         <NavItem
+          href="#cluster"
+          title={t("cluster.title")}
+          description={t("cluster.description")}
+          icon={Layers}
+          className="md:col-span-2"
+        />
+
+        {/* Row 3 */}
+        <NavItem
+          href="#monitoring"
+          title={t("monitoring.title")}
+          description={t("monitoring.description")}
+          icon={Activity}
+          className="md:col-span-3"
+        />
+
+        {/* Row 4 */}
+        <NavItem
           href="/projects"
-          title="Projects"
-          description="A showcase of my recent work and portfolio projects."
+          title={t("projects.title")}
+          description={t("projects.description")}
           icon={Layers}
           className="md:col-span-3"
         />
+
+        {/* Row 5 */}
         <NavItem
           href="#provisioning"
-          title="Ansible Provisioning"
-          description="How the cluster nodes were configured with Ansible."
+          title={t("provisioning.title")}
+          description={t("provisioning.description")}
           icon={TerminalSquare}
           className="md:col-span-3"
         />

@@ -1,51 +1,36 @@
 [
   {
     "id": "1",
-    "company": "TechCorp Solutions",
-    "position": "DevOps Engineer Intern",
-    "startDate": "2023-05-01",
-    "endDate": "2023-08-31",
-    "description": "Assisted in automating deployment pipelines and implementing monitoring solutions for cloud-native applications. Worked with Kubernetes, Docker, and various CI/CD tools.",
-    "technologies": ["Kubernetes", "Docker", "Jenkins", "AWS", "Prometheus"],
-    "achievements": [
-      "Reduced deployment time by 40% through pipeline optimization",
-      "Implemented automated monitoring for 15+ microservices",
-      "Created documentation for deployment procedures"
-    ],
-    "createdAt": "2024-01-10T09:00:00Z",
-    "updatedAt": "2024-01-10T09:00:00Z"
-  },
-  {
-    "id": "2",
-    "company": "StartupXYZ",
-    "position": "Junior DevOps Engineer",
-    "startDate": "2023-09-01",
+    "company": "Kleff Hosting",
+    "position_en": "Backend & Platform Developer | Contract",
+    "position_fr": "Développeur Backend & Plateforme | Contrat",
+    "startDate": "2025-07-01",
     "endDate": null,
-    "description": "Full-time DevOps role focusing on infrastructure automation, container orchestration, and cloud migration. Responsible for maintaining high-availability systems and implementing best practices.",
-    "technologies": ["Kubernetes", "Terraform", "Ansible", "GitLab CI", "Azure", "Grafana"],
-    "achievements": [
-      "Led migration of legacy applications to Kubernetes",
-      "Implemented GitOps workflow using ArgoCD",
-      "Reduced infrastructure costs by 25% through optimization",
-      "Achieved 99.9% uptime for critical services"
+    "description_en": "Worked with a team to architect a consumer-facing PaaS, overseeing the deployment of 10+ Go/Java microservices.",
+    "description_fr": "Travaillé avec une équipe pour architecturer un PaaS orienté client, supervisant le déploiement de plus de 10 microservices Go/Java.",
+    "technologies": [
+      "Go",
+      "Java",
+      "Kubernetes",
+      "Operators",
+      "LGTM Stack",
+      "ArgoCD"
     ],
-    "createdAt": "2024-02-15T14:30:00Z",
-    "updatedAt": "2024-03-20T10:15:00Z"
-  },
-  {
-    "id": "3",
-    "company": "University Research Lab",
-    "position": "Research Assistant - Cloud Computing",
-    "startDate": "2022-09-01",
-    "endDate": "2023-04-30",
-    "description": "Conducted research on container security and performance optimization in cloud environments. Developed tools for automated security scanning and performance monitoring.",
-    "technologies": ["Docker", "Kubernetes", "Python", "Security Scanning", "Performance Analysis"],
-    "achievements": [
-      "Published research paper on container security best practices",
-      "Developed automated security scanning tool adopted by 3 research teams",
-      "Presented findings at 2 national conferences"
+    "achievements_en": [
+      "Developed a **Custom Kubernetes Operator** in Go to manage multi-tenant lifecycle",
+      "Implemented custom CRDs automating reconciliation of VirtualServices, ResourceQuotas, and RBAC",
+      "Implemented SRE-driven observability using **LGTM stack** (Prometheus, Grafana, Loki, Tempo)",
+      "Maintained **99.9% availability** target during beta testing",
+      "Automated platform lifecycle via **GitOps (ArgoCD)** achieving 100% declarative infrastructure"
     ],
-    "createdAt": "2024-01-20T11:45:00Z",
-    "updatedAt": "2024-01-20T11:45:00Z"
+    "achievements_fr": [
+      "Développement d'un **opérateur Kubernetes personnalisé** en Go pour gérer le cycle de vie multi-tenant",
+      "Mise en œuvre de CRD personnalisés automatisant la réconciliation des VirtualServices, ResourceQuotas et RBAC",
+      "Mise en œuvre d'une observabilité pilotée par le SRE utilisant la **pile LGTM** (Prometheus, Grafana, Loki, Tempo)",
+      "Maintien de l'objectif de **disponibilité de 99,9 %** pendant les tests bêta",
+      "Automatisation du cycle de vie de la plateforme via **GitOps (ArgoCD)** atteignant 100 % d'infrastructure déclarative"
+    ],
+    "createdAt": "2025-07-01T09:00:00Z",
+    "updatedAt": "2026-02-10T09:00:00Z"
   }
 ]

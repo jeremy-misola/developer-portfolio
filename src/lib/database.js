@@ -157,7 +157,7 @@ const db = {
       new Date().toISOString(),
       new Date().toISOString()
     ]);
-    
+
     const row = result.rows[0];
     return {
       id: row.id.toString(),
@@ -298,7 +298,7 @@ const db = {
       new Date().toISOString(),
       new Date().toISOString()
     ]);
-    
+
     const row = result.rows[0];
     return {
       id: row.id.toString(),
@@ -450,7 +450,7 @@ const db = {
       data.status === 'approved' ? new Date().toISOString() : null,
       new Date().toISOString()
     ]);
-    
+
     const row = result.rows[0];
     return {
       id: row.id.toString(),

@@ -19,8 +19,11 @@ import {
   Tag,
   ExternalLink,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 function Experience() {
+  const t = useTranslations("Experience");
+  const locale = useLocale();
   const [experience, setExperience] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +47,7 @@ function Experience() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    return date.toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long' });
   };
 
   const getStatusBadge = (startDate, endDate) => {
@@ -56,21 +59,21 @@ function Experience() {
       return (
         <Badge variant="secondary" className="bg-blue-500 hover:bg-blue-600">
           <Clock className="h-3 w-3 mr-1" />
-          Current
+          {locale === 'fr' ? 'Actuel' : 'Current'}
         </Badge>
       );
     } else if (start > now) {
       return (
         <Badge variant="outline" className="bg-yellow-500 hover:bg-yellow-600">
           <Calendar className="h-3 w-3 mr-1" />
-          Upcoming
+          {locale === 'fr' ? 'À venir' : 'Upcoming'}
         </Badge>
       );
     } else {
       return (
         <Badge variant="default" className="bg-green-500 hover:bg-green-600">
           <CheckCircle className="h-3 w-3 mr-1" />
-          Completed
+          {locale === 'fr' ? 'Terminé' : 'Completed'}
         </Badge>
       );
     }
@@ -80,7 +83,7 @@ function Experience() {
     return (
       <section id="experience" className="py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">Experience</h2>
+          <h2 className="text-4xl font-bold text-center mb-12">{t("title")}</h2>
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
@@ -99,16 +102,18 @@ function Experience() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold tracking-tight mb-4">
-            Professional Experience
+            {t("title")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            My journey in DevOps and cloud-native technologies, from internships to full-time roles.
+            {locale === 'fr'
+              ? "Mon parcours dans les technologies DevOps et cloud-native, des stages aux rôles à temps plein."
+              : "My journey in DevOps and cloud-native technologies, from internships to full-time roles."}
           </p>
         </motion.div>
 
         {experience.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            No experience data available at the moment.
+            {locale === 'fr' ? "Aucune donnée d'expérience disponible pour le moment." : "No experience data available at the moment."}
           </div>
         ) : (
           <motion.div
@@ -145,7 +150,7 @@ function Experience() {
                 <Card className="h-full flex flex-col border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
                   {/* Timeline indicator */}
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
+
                   <CardHeader className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="space-y-2">
@@ -155,7 +160,7 @@ function Experience() {
                           </div>
                           <div>
                             <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
-                              {exp.position}
+                              {locale === 'fr' ? exp.position_fr : exp.position_en || exp.position}
                             </CardTitle>
                             <CardDescription className="text-lg font-semibold text-muted-foreground">
                               {exp.company}
@@ -166,14 +171,14 @@ function Experience() {
                           {getStatusBadge(exp.startDate, exp.endDate)}
                           <Badge variant="outline" className="text-sm">
                             <Calendar className="h-3 w-3 mr-1" />
-                            {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Present'}
+                            {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : t("present")}
                           </Badge>
                         </div>
                       </div>
                     </div>
 
                     <CardDescription className="text-base leading-relaxed">
-                      {exp.description}
+                      {locale === 'fr' ? exp.description_fr : exp.description_en || exp.description}
                     </CardDescription>
                   </CardHeader>
 
@@ -191,9 +196,11 @@ function Experience() {
                     {/* Achievements */}
                     {exp.achievements && exp.achievements.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">Key Achievements</h4>
+                        <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+                          {locale === 'fr' ? 'Principales Réalisations' : 'Key Achievements'}
+                        </h4>
                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                          {exp.achievements.map((achievement, achievementIndex) => (
+                          {(locale === 'fr' ? exp.achievements_fr : exp.achievements_en || exp.achievements).map((achievement, achievementIndex) => (
                             <li key={achievementIndex}>{achievement}</li>
                           ))}
                         </ul>
@@ -210,7 +217,7 @@ function Experience() {
                       >
                         <a href="#about" target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="h-4 w-4" />
-                          View Resume
+                          {locale === 'fr' ? 'Voir le CV' : 'View Resume'}
                         </a>
                       </Button>
                     </div>
@@ -218,11 +225,11 @@ function Experience() {
                     {/* Metadata */}
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>
-                        Added: {new Date(exp.createdAt).toLocaleDateString()}
+                        {locale === 'fr' ? 'Ajouté le' : 'Added'}: {new Date(exp.createdAt).toLocaleDateString(locale)}
                       </span>
                       {exp.updatedAt && (
                         <span>
-                          Updated: {new Date(exp.updatedAt).toLocaleDateString()}
+                          {locale === 'fr' ? 'Mis à jour le' : 'Updated'}: {new Date(exp.updatedAt).toLocaleDateString(locale)}
                         </span>
                       )}
                     </div>

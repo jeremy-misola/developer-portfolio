@@ -20,8 +20,11 @@ import {
   Tag,
   Image as ImageIcon,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 function Projects() {
+  const t = useTranslations("Projects");
+  const locale = useLocale();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,21 +52,21 @@ function Projects() {
         return (
           <Badge variant="default" className="bg-green-500 hover:bg-green-600">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Completed
+            {t("status.completed")}
           </Badge>
         );
       case "in-progress":
         return (
           <Badge variant="secondary" className="bg-blue-500 hover:bg-blue-600">
             <Clock className="h-3 w-3 mr-1" />
-            In Progress
+            {t("status.in-progress")}
           </Badge>
         );
       case "planned":
         return (
           <Badge variant="outline" className="bg-yellow-500 hover:bg-yellow-600">
             <AlertCircle className="h-3 w-3 mr-1" />
-            Planned
+            {t("status.planned")}
           </Badge>
         );
       default:
@@ -75,7 +78,7 @@ function Projects() {
     return (
       <section id="projects" className="py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">Projects</h2>
+          <h2 className="text-4xl font-bold text-center mb-12">{t("title")}</h2>
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
@@ -94,17 +97,16 @@ function Projects() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold tracking-tight mb-4">
-            Featured Projects
+            {t("title")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            A showcase of my recent work, including cloud-native applications, 
-            infrastructure automation, and DevOps solutions.
+            {t("subtitle")}
           </p>
         </motion.div>
 
         {projects.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            No projects available at the moment.
+            {t("no_projects")}
           </div>
         ) : (
           <motion.div
@@ -149,7 +151,7 @@ function Projects() {
                       />
                       {project.images.length > 1 && (
                         <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                          +{project.images.length - 1} images
+                          +{project.images.length - 1} {t("images")}
                         </div>
                       )}
                     </div>
@@ -164,14 +166,14 @@ function Projects() {
                         <div className="flex items-center gap-2">
                           {getStatusBadge(project.status)}
                           <Badge variant="outline" className="text-sm">
-                            Priority {project.priority}
+                            {t("priority")} {project.priority}
                           </Badge>
                         </div>
                       </div>
                     </div>
 
                     <CardDescription className="text-base leading-relaxed">
-                      {project.description}
+                      {locale === 'fr' ? project.description_fr : project.description_en || project.description}
                     </CardDescription>
                   </CardHeader>
 
@@ -201,7 +203,7 @@ function Projects() {
                             rel="noopener noreferrer"
                           >
                             <Github className="h-4 w-4" />
-                            Code
+                            {t("code")}
                           </a>
                         </Button>
                       )}
@@ -217,7 +219,7 @@ function Projects() {
                             rel="noopener noreferrer"
                           >
                             <ExternalLink className="h-4 w-4" />
-                            Live Demo
+                            {t("demo")}
                           </a>
                         </Button>
                       )}
@@ -226,11 +228,11 @@ function Projects() {
                     {/* Project Links */}
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>
-                        Created: {new Date(project.createdAt).toLocaleDateString()}
+                        {t("created")}: {new Date(project.createdAt).toLocaleDateString(locale)}
                       </span>
                       {project.updatedAt && (
                         <span>
-                          Updated: {new Date(project.updatedAt).toLocaleDateString()}
+                          {t("updated")}: {new Date(project.updatedAt).toLocaleDateString(locale)}
                         </span>
                       )}
                     </div>

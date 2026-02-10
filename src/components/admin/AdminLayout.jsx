@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/routing';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Users, 
-  FolderKanban, 
-  Briefcase, 
-  LogOut, 
-  Menu, 
+import {
+  LayoutDashboard,
+  Users,
+  FolderKanban,
+  Briefcase,
+  LogOut,
+  Menu,
   X,
   Sun,
   Moon,
@@ -33,12 +33,14 @@ const AdminLayout = ({ children }) => {
   const [hasMounted, setHasMounted] = useState(false);
   const { isAuthenticated, isLoading } = useAdminAuth();
 
+  const pathname = usePathname();
+
   // Redirect to login if not authenticated and not already on login page
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && router.pathname !== '/admin/login') {
+    if (!isLoading && !isAuthenticated && pathname !== '/admin/login') {
       router.push('/admin/login');
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, router, pathname]);
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -120,11 +122,11 @@ const AdminLayout = ({ children }) => {
               onClick={toggleTheme}
               className="rounded-full"
             >
-              {theme === 'dark' ? (
+              {hasMounted && (theme === 'dark' ? (
                 <Sun className="h-5 w-5" />
               ) : (
                 <Moon className="h-5 w-5" />
-              )}
+              ))}
             </Button>
           </div>
         </div>
@@ -132,8 +134,8 @@ const AdminLayout = ({ children }) => {
 
       {/* Main Layout Container */}
       <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <AnimatePresence>
+        {/* Sidebar */}
+        <AnimatePresence>
           {(hasMounted && (isSidebarOpen || !isMobile)) && (
             <motion.aside
               initial={{ x: -300, opacity: 0 }}
@@ -159,8 +161,9 @@ const AdminLayout = ({ children }) => {
                   <div className="space-y-1 px-3">
                     {navigation.map((item) => {
                       const Icon = item.icon;
-                      const isActive = router.pathname === item.href;
-                      
+                      const isActive = pathname === item.href;
+                      // Note: router.pathname might not be available or formatted same way in next-intl router
+                      // but we can use simple conditional or comparison if needed.
                       return (
                         <Button
                           key={item.name}
@@ -189,14 +192,14 @@ const AdminLayout = ({ children }) => {
                       onClick={toggleTheme}
                       className="rounded-full"
                     >
-                      {theme === 'dark' ? (
+                      {hasMounted && (theme === 'dark' ? (
                         <Sun className="h-4 w-4" />
                       ) : (
                         <Moon className="h-4 w-4" />
-                      )}
+                      ))}
                     </Button>
                   </div>
-                  
+
                   <Button
                     variant="destructive"
                     className="w-full"
@@ -209,22 +212,22 @@ const AdminLayout = ({ children }) => {
               </div>
             </motion.aside>
           )}
-      </AnimatePresence>
+        </AnimatePresence>
 
-      {/* Overlay for mobile */}
-      {isMobile && isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+        {/* Overlay for mobile */}
+        {isMobile && isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
-      {/* Main Content */}
-      <main className={`flex-1 transition-all duration-300 ${isMobile && isSidebarOpen ? 'opacity-50' : ''}`}>
-        <div className="p-6 lg:p-8">
-          {children}
-        </div>
-      </main>
+        {/* Main Content */}
+        <main className={`flex-1 transition-all duration-300 ${isMobile && isSidebarOpen ? 'opacity-50' : ''}`}>
+          <div className="p-6 lg:p-8">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

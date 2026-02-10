@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  FolderKanban, 
-  Briefcase, 
-  Calendar, 
-  CheckCircle, 
-  Clock, 
+import {
+  Users,
+  FolderKanban,
+  Briefcase,
+  Calendar,
+  CheckCircle,
+  Clock,
   AlertCircle,
   Plus,
   Eye,
@@ -296,7 +296,7 @@ export default function AdminDashboard() {
                 Update Experience
               </Button>
             </div>
-            
+
             <div className="pt-4 border-t">
               <p className="text-sm text-muted-foreground">
                 Tip: Always review pending testimonials before publishing them to ensure quality.
