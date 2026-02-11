@@ -4,8 +4,36 @@ import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
+// CORS configuration
+function applyCorsHeaders(response: NextResponse) {
+  // Allow all origins
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  // Allow all methods including HEAD
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
+  // Allow common headers
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  // Allow credentials (if needed)
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  // Set maximum age for preflight cache
+  response.headers.set('Access-Control-Max-Age', '86400'); // 24 hours
+
+  return response;
+}
+
 export default function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+
+    // Handle CORS preflight OPTIONS requests
+    if (request.method === 'OPTIONS') {
+      const response = new NextResponse(null, { status: 204 });
+      return applyCorsHeaders(response);
+    }
+
+    // Apply CORS headers to all API responses
+    if (pathname.startsWith('/api')) {
+      const response = intlMiddleware(request);
+      return applyCorsHeaders(response);
+    }
 
     // 1. Handle Admin Authentication
     // Check if it's an admin or admin API route (with or without locale)
@@ -49,6 +77,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-    // Match internationalized pathnames and admin routes
-    matcher: ['/', '/(fr|en|zh)/:path*', '/admin/:path*', '/api/admin/:path*']
+    // Match internationalized pathnames, admin routes, and all API routes
+    matcher: ['/', '/(fr|en|zh)/:path*', '/admin/:path*', '/api/:path*']
 };

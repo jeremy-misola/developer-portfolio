@@ -1,24 +1,36 @@
 import { NextResponse } from 'next/server';
 import { validateAdminCredentials, generateSessionToken, addActiveSession } from '@/lib/admin';
+import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return createPreflightResponse();
+}
+
+// Handle HEAD requests
+export async function HEAD() {
+  const response = new NextResponse(null);
+  return applyCorsHeaders(response);
+}
 
 export async function POST(request) {
   try {
     const { username, password } = await request.json();
 
     if (!username || !password) {
-      return NextResponse.json(
+      return applyCorsHeaders(NextResponse.json(
         { error: 'Username and password are required' },
         { status: 400 }
-      );
+      ));
     }
 
     const isValid = validateAdminCredentials(username, password);
 
     if (!isValid) {
-      return NextResponse.json(
+      return applyCorsHeaders(NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
-      );
+      ));
     }
 
     const sessionToken = generateSessionToken();
@@ -40,13 +52,13 @@ export async function POST(request) {
       path: '/'
     });
 
-    return response;
+    return applyCorsHeaders(response);
   } catch (error) {
     console.error('Auth error:', error);
-    return NextResponse.json(
+    return applyCorsHeaders(NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    );
+    ));
   }
 }
 
@@ -72,12 +84,12 @@ export async function DELETE(request) {
       path: '/'
     });
 
-    return response;
+    return applyCorsHeaders(response);
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.json(
+    return applyCorsHeaders(NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    );
+    ));
   }
 }

@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { db, initializeDatabase } from '@/lib/database';
 import fs from 'fs/promises';
 import path from 'path';
+import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return createPreflightResponse();
+}
+
+// Handle HEAD requests
+export async function HEAD() {
+  const response = new NextResponse(null);
+  return applyCorsHeaders(response);
+}
 
 export async function GET() {
   try {
@@ -10,7 +22,7 @@ export async function GET() {
     if (initialized) {
       const projects = await db.getProjects();
       if (projects && projects.length > 0) {
-        return NextResponse.json(projects);
+        return applyCorsHeaders(NextResponse.json(projects));
       }
     }
     
@@ -19,7 +31,7 @@ export async function GET() {
     const filePath = path.join(process.cwd(), 'data', 'projects.json');
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const staticData = JSON.parse(fileContent);
-    return NextResponse.json(staticData);
+    return applyCorsHeaders(NextResponse.json(staticData));
     
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -28,10 +40,10 @@ export async function GET() {
       const filePath = path.join(process.cwd(), 'data', 'projects.json');
       const fileContent = await fs.readFile(filePath, 'utf-8');
       const staticData = JSON.parse(fileContent);
-      return NextResponse.json(staticData);
+      return applyCorsHeaders(NextResponse.json(staticData));
     } catch (staticError) {
       console.error('Error reading static projects data:', staticError);
-      return NextResponse.json([], { status: 200 }); // Return empty array if all fails
+      return applyCorsHeaders(NextResponse.json([], { status: 200 })); // Return empty array if all fails
     }
   }
 }

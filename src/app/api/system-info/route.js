@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
 import { testConnection } from '@/lib/database';
+import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return createPreflightResponse();
+}
+
+// Handle HEAD requests
+export async function HEAD() {
+  const response = new NextResponse(null);
+  return applyCorsHeaders(response);
+}
 
 export async function GET() {
   try {
@@ -10,7 +22,7 @@ export async function GET() {
     const environmentVariables = process.env;
     
     // Return combined system info
-    return NextResponse.json({
+    return applyCorsHeaders(NextResponse.json({
       status: 'success',
       timestamp: new Date().toISOString(),
       database: {
@@ -27,11 +39,11 @@ export async function GET() {
         platform: process.platform,
         arch: process.arch
       }
-    });
+    }));
     
   } catch (error) {
     console.error('Error fetching system info:', error);
-    return NextResponse.json(
+    return applyCorsHeaders(NextResponse.json(
       {
         status: 'error',
         timestamp: new Date().toISOString(),
@@ -42,6 +54,6 @@ export async function GET() {
         }
       },
       { status: 500 }
-    );
+    ));
   }
 }

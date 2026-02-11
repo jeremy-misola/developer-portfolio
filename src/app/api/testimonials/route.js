@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { db, initializeDatabase } from '@/lib/database';
 import fs from 'fs/promises';
 import path from 'path';
+import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return createPreflightResponse();
+}
+
+// Handle HEAD requests
+export async function HEAD() {
+  const response = new NextResponse(null);
+  return applyCorsHeaders(response);
+}
 
 export async function GET() {
   try {
@@ -10,7 +22,7 @@ export async function GET() {
     if (initialized) {
       const testimonials = await db.getTestimonials('approved');
       if (testimonials && testimonials.length > 0) {
-        return NextResponse.json(testimonials);
+        return applyCorsHeaders(NextResponse.json(testimonials));
       }
     }
     
@@ -21,7 +33,7 @@ export async function GET() {
     const staticData = JSON.parse(fileContent);
     // Filter to only approved testimonials (same as database query)
     const approvedTestimonials = staticData.filter(t => t.status === 'approved');
-    return NextResponse.json(approvedTestimonials);
+    return applyCorsHeaders(NextResponse.json(approvedTestimonials));
     
   } catch (error) {
     console.error('Error fetching public testimonials:', error);
@@ -31,10 +43,10 @@ export async function GET() {
       const fileContent = await fs.readFile(filePath, 'utf-8');
       const staticData = JSON.parse(fileContent);
       const approvedTestimonials = staticData.filter(t => t.status === 'approved');
-      return NextResponse.json(approvedTestimonials);
+      return applyCorsHeaders(NextResponse.json(approvedTestimonials));
     } catch (staticError) {
       console.error('Error reading static testimonials data:', staticError);
-      return NextResponse.json([], { status: 200 }); // Return empty array if all fails
+      return applyCorsHeaders(NextResponse.json([], { status: 200 })); // Return empty array if all fails
     }
   }
 }
