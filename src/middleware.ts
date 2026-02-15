@@ -8,12 +8,13 @@ const intlMiddleware = createMiddleware(routing);
 function applyCorsHeaders(response: NextResponse) {
   // Allow all origins
   response.headers.set('Access-Control-Allow-Origin', '*');
-  // Allow all methods including HEAD
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
+  // Allow all standard HTTP methods, including HEAD
+  response.headers.set(
+    'Access-Control-Allow-Methods',
+    'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE, CONNECT'
+  );
   // Allow common headers
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  // Allow credentials (if needed)
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
   // Set maximum age for preflight cache
   response.headers.set('Access-Control-Max-Age', '86400'); // 24 hours
 

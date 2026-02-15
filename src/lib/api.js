@@ -3,9 +3,11 @@ import { isValidSession } from '@/lib/admin';
 
 export function applyJsonCors(response) {
   response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
+  response.headers.set(
+    'Access-Control-Allow-Methods',
+    'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE, CONNECT'
+  );
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
   response.headers.set('Access-Control-Max-Age', '86400');
   return response;
 }
