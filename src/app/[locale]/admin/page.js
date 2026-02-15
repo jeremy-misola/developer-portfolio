@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
   Users,
@@ -22,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function AdminDashboard() {
+  const locale = useLocale();
   const { toast } = useToast();
   const [stats, setStats] = useState({
     testimonials: { total: 0, approved: 0, pending: 0 },
@@ -33,7 +35,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchStats();
     fetchRecentActivity();
-  }, []);
+  }, [locale]);
 
   const fetchStats = async () => {
     try {
@@ -114,8 +116,8 @@ export default function AdminDashboard() {
       icon: Users,
       color: "from-blue-500 to-cyan-500",
       actions: [
-        { label: "View All", href: "/admin/testimonials", icon: Eye },
-        { label: "Add New", href: "/admin/testimonials/new", icon: Plus }
+        { label: "View All", href: `/${locale}/admin/testimonials`, icon: Eye },
+        { label: "Add New", href: `/${locale}/admin/testimonials/new`, icon: Plus }
       ],
       badges: [
         { label: "Approved", count: stats.testimonials.approved, variant: "default" },
@@ -129,8 +131,8 @@ export default function AdminDashboard() {
       icon: FolderKanban,
       color: "from-green-500 to-emerald-500",
       actions: [
-        { label: "View All", href: "/admin/projects", icon: Eye },
-        { label: "Add New", href: "/admin/projects/new", icon: Plus }
+        { label: "View All", href: `/${locale}/admin/projects`, icon: Eye },
+        { label: "Add New", href: `/${locale}/admin/projects/new`, icon: Plus }
       ],
       badges: [
         { label: "Completed", count: stats.projects.completed, variant: "default" },
@@ -144,8 +146,8 @@ export default function AdminDashboard() {
       icon: Briefcase,
       color: "from-purple-500 to-pink-500",
       actions: [
-        { label: "View All", href: "/admin/experience", icon: Eye },
-        { label: "Add New", href: "/admin/experience/new", icon: Plus }
+        { label: "View All", href: `/${locale}/admin/experience`, icon: Eye },
+        { label: "Add New", href: `/${locale}/admin/experience/new`, icon: Plus }
       ],
       badges: []
     }
@@ -283,15 +285,15 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid gap-2">
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = '/admin/testimonials'}>
+              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/testimonials`}>
                 <Users className="h-4 w-4 mr-2" />
                 Review Pending Testimonials ({stats.testimonials.pending})
               </Button>
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = '/admin/projects'}>
+              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/projects`}>
                 <FolderKanban className="h-4 w-4 mr-2" />
                 Manage Projects
               </Button>
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = '/admin/experience'}>
+              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/experience`}>
                 <Briefcase className="h-4 w-4 mr-2" />
                 Update Experience
               </Button>

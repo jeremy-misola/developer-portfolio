@@ -1,131 +1,112 @@
-import { NextResponse } from 'next/server';
 import { db, initializeDatabase } from '@/lib/database';
-import { isValidSession } from '@/lib/admin';
-import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+import {
+  cleanArray,
+  cleanString,
+  cleanText,
+  fail,
+  head,
+  ok,
+  parseId,
+  preflight,
+  requireAdmin,
+} from '@/lib/api';
 
-// Handle CORS preflight
 export async function OPTIONS() {
-  return createPreflightResponse();
+  return preflight();
 }
 
-// Handle HEAD requests
 export async function HEAD() {
-  const response = new NextResponse(null);
-  return applyCorsHeaders(response);
+  return head();
 }
 
 export async function GET(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const experience = await db.getExperience();
-    return applyCorsHeaders(NextResponse.json(experience));
-  } catch (error) {
-    console.error('Error fetching experience:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to fetch experience' },
-      { status: 500 }
-    ));
-  }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
+  return ok(await db.getExperience());
 }
 
 export async function POST(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const data = await request.json();
-    const newExperience = await db.createExperience(data);
-    
-    return applyCorsHeaders(NextResponse.json(newExperience, { status: 201 }));
-  } catch (error) {
-    console.error('Error creating experience:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to create experience' },
-      { status: 500 }
-    ));
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
+
+  const body = await request.json();
+  const company = cleanString(body.company, 255);
+  const positionEn = cleanString(body.position_en || body.position, 255);
+  const positionFr = cleanString(body.position_fr || body.position, 255);
+
+  if (!company || !positionEn || !body.startDate) {
+    return fail('Company, position and start date are required');
   }
+
+  const created = await db.createExperience({
+    company,
+    position: positionEn,
+    position_en: positionEn,
+    position_fr: positionFr || positionEn,
+    startDate: body.startDate,
+    endDate: body.endDate || null,
+    description: cleanText(body.description || body.description_en, 4000),
+    description_en: cleanText(body.description_en || body.description, 4000),
+    description_fr: cleanText(body.description_fr || body.description, 4000),
+    technologies: cleanArray(body.technologies, 30, 80),
+    achievements: cleanArray(body.achievements, 30, 200),
+    achievements_en: cleanArray(body.achievements_en, 30, 200),
+    achievements_fr: cleanArray(body.achievements_fr, 30, 200),
+  });
+
+  return ok(created, 201);
 }
 
 export async function PUT(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const { id, ...updateData } = await request.json();
-    const updatedExperience = await db.updateExperience(id, updateData);
-    
-    if (!updatedExperience) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Experience not found' },
-        { status: 404 }
-      ));
-    }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
 
-    return applyCorsHeaders(NextResponse.json(updatedExperience));
-  } catch (error) {
-    console.error('Error updating experience:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to update experience' },
-      { status: 500 }
-    ));
-  }
+  const body = await request.json();
+  const id = parseId(body.id);
+  if (!id) return fail('Invalid experience id');
+
+  const updated = await db.updateExperience(id, {
+    company: body.company !== undefined ? cleanString(body.company, 255) : undefined,
+    position: body.position !== undefined ? cleanString(body.position, 255) : undefined,
+    position_en: body.position_en !== undefined ? cleanString(body.position_en, 255) : undefined,
+    position_fr: body.position_fr !== undefined ? cleanString(body.position_fr, 255) : undefined,
+    startDate: body.startDate,
+    endDate: body.endDate,
+    description: body.description !== undefined ? cleanText(body.description, 4000) : undefined,
+    description_en: body.description_en !== undefined ? cleanText(body.description_en, 4000) : undefined,
+    description_fr: body.description_fr !== undefined ? cleanText(body.description_fr, 4000) : undefined,
+    technologies: body.technologies !== undefined ? cleanArray(body.technologies, 30, 80) : undefined,
+    achievements: body.achievements !== undefined ? cleanArray(body.achievements, 30, 200) : undefined,
+    achievements_en: body.achievements_en !== undefined ? cleanArray(body.achievements_en, 30, 200) : undefined,
+    achievements_fr: body.achievements_fr !== undefined ? cleanArray(body.achievements_fr, 30, 200) : undefined,
+  });
+
+  if (!updated) return fail('Experience not found', 404);
+  return ok(updated);
 }
 
 export async function DELETE(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const { id } = await request.json();
-    const deleted = await db.deleteExperience(id);
-    
-    if (!deleted) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Experience not found' },
-        { status: 404 }
-      ));
-    }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
 
-    return applyCorsHeaders(NextResponse.json({ message: 'Experience deleted successfully' }));
-  } catch (error) {
-    console.error('Error deleting experience:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to delete experience' },
-      { status: 500 }
-    ));
-  }
+  const body = await request.json();
+  const id = parseId(body.id);
+  if (!id) return fail('Invalid experience id');
+
+  const deleted = await db.deleteExperience(id);
+  if (!deleted) return fail('Experience not found', 404);
+
+  return ok({ success: true });
 }

@@ -12,7 +12,8 @@
         "gitops": "GitOps Workflow",
         "provisioning": "Provisioning",
         "testimonials": "Testimonials",
-        "more": "More"
+        "more": "More",
+        "admin": "Admin"
     },
     "LanguageSwitcher": {
         "label": "Language"

@@ -29,10 +29,31 @@ export default function middleware(request: NextRequest) {
       return applyCorsHeaders(response);
     }
 
-    // Apply CORS headers to all API responses
+    // API routes should not be localized
     if (pathname.startsWith('/api')) {
-      const response = intlMiddleware(request);
-      return applyCorsHeaders(response);
+      // Apply CORS headers to all API responses
+      // For API routes, we just pass through without localization
+      // First, check if it's an authenticated admin API route
+      const isAdminApiRoute = pathname.startsWith('/api/admin');
+      if (isAdminApiRoute) {
+        const isAuthEndpoint = pathname.includes('/api/admin/auth');
+        const isPublicApi = pathname === '/api/cluster-state';
+
+        if (!isAuthEndpoint && !isPublicApi) {
+          const sessionToken = request.cookies.get('admin_session');
+
+          if (!sessionToken) {
+            // Return 401 for API endpoints
+            return NextResponse.json(
+              { error: 'Authentication required' },
+              { status: 401 }
+            );
+          }
+        }
+      }
+      
+      // For all API routes, return the response without localization
+      return applyCorsHeaders(NextResponse.next());
     }
 
     // 1. Handle Admin Authentication

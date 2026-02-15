@@ -1,24 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname } from '@/i18n/routing';
 
 export function useAdminAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1]; // Extract current locale from path
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Check if session cookie exists
-        const hasSessionCookie = document.cookie.includes('admin_session=');
-        
-        if (!hasSessionCookie) {
-          setIsAuthenticated(false);
-          setIsLoading(false);
-          return;
-        }
-
-        // Make a quick API call to verify the session is still valid
+        // Verify session server-side (httpOnly cookies are not readable in JS)
         const response = await fetch('/api/admin/auth/verify', {
           method: 'GET',
           credentials: 'include'
@@ -27,9 +19,8 @@ export function useAdminAuth() {
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
-          // Session is invalid, clear any cookies and redirect
+          // Session is missing/invalid
           setIsAuthenticated(false);
-          // Don't redirect immediately here, let the component handle it
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -40,7 +31,7 @@ export function useAdminAuth() {
     };
 
     checkAuth();
-  }, [router]);
+  }, [pathname]);
 
-  return { isAuthenticated, isLoading };
+  return { isAuthenticated, isLoading, locale };
 }

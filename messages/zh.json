@@ -12,7 +12,8 @@
         "gitops": "GitOps 工作流",
         "provisioning": "基础设施配置",
         "testimonials": "客户评价",
-        "more": "更多"
+        "more": "更多",
+        "admin": "管理后台"
     },
     "LanguageSwitcher": {
         "label": "语言"

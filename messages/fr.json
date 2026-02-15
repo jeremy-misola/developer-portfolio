@@ -12,7 +12,8 @@
         "gitops": "Flux GitOps",
         "provisioning": "Provisionnement",
         "testimonials": "Témoignages",
-        "more": "Plus"
+        "more": "Plus",
+        "admin": "Admin"
     },
     "LanguageSwitcher": {
         "label": "Langue"

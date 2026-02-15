@@ -9,6 +9,10 @@ import {
   Users,
   FolderKanban,
   Briefcase,
+  Wrench,
+  GraduationCap,
+  Heart,
+  Mail,
   LogOut,
   Menu,
   X,
@@ -37,16 +41,20 @@ const AdminLayout = ({ children }) => {
 
   // Redirect to login if not authenticated and not already on login page
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && pathname !== '/admin/login') {
+    if (!isLoading && !isAuthenticated && !pathname.includes('/admin/login')) {
       router.push('/admin/login');
     }
   }, [isAuthenticated, isLoading, router, pathname]);
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Testimonials', href: '/admin/testimonials', icon: Users },
     { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
     { name: 'Experience', href: '/admin/experience', icon: Briefcase },
+    { name: 'Skills', href: '/admin/skills', icon: Wrench },
+    { name: 'Education', href: '/admin/education', icon: GraduationCap },
+    { name: 'Hobbies', href: '/admin/hobbies', icon: Heart },
+    { name: 'Testimonials', href: '/admin/testimonials', icon: Users },
+    { name: 'Messages', href: '/admin/messages', icon: Mail },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 

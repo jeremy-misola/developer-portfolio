@@ -1,44 +1,24 @@
-import React from "react";
-import Hero from "../../components/Hero";
-import Navigation from "../../components/Navigation";
-import About from "../../components/About";
-import Experience from "../../components/Experience";
-import Education from "../../components/Education";
-import Projects from "../../components/Projects";
-import Hackathons from "../../components/Hackathons";
-import KubernetesCluster from "../../components/KubernetesCluster";
-import Monitoring from "../../components/Monitoring";
-import GitOps from "../../components/GitOps";
-import Ansible from "../../components/Ansible";
-import Testimonials from "../../components/Testimonials";
-import { Separator } from "../../components/ui/separator";
+import React from 'react';
+import ProfileHero from '@/components/ProfileHero';
+import Skills from '@/components/Skills';
+import Experience from '@/components/Experience';
+import Education from '@/components/Education';
+import Projects from '@/components/Projects';
+import Hobbies from '@/components/Hobbies';
+import Testimonials from '@/components/Testimonials';
+import ContactSection from '@/components/ContactSection';
 
-function Home() {
+export default function Home() {
   return (
-    <main id="main-content">
-      <Hero />
-      <Navigation />
-      <About />
-      <Separator className="my-16" />
-      <Experience />
-      <Separator className="my-16" />
-      <Education />
-      <Separator className="my-16" />
+    <main>
+      <ProfileHero />
+      <Skills />
       <Projects />
-      <Separator className="my-16" />
-      <Hackathons />
-      <Separator className="my-16" />
-      <KubernetesCluster />
-      <Separator className="my-16" />
-      <Monitoring />
-      <Separator className="my-16" />
-      <GitOps />
-      <Separator className="my-16" />
-      <Ansible />
-      <Separator className="my-16" />
+      <Experience />
+      <Education />
+      <Hobbies />
       <Testimonials />
+      <ContactSection />
     </main>
   );
 }
-
-export default Home;

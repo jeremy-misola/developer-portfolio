@@ -1,131 +1,94 @@
-import { NextResponse } from 'next/server';
 import { db, initializeDatabase } from '@/lib/database';
-import { isValidSession } from '@/lib/admin';
-import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
+import {
+  cleanString,
+  cleanText,
+  fail,
+  head,
+  ok,
+  parseId,
+  preflight,
+  requireAdmin,
+} from '@/lib/api';
 
-// Handle CORS preflight
 export async function OPTIONS() {
-  return createPreflightResponse();
+  return preflight();
 }
 
-// Handle HEAD requests
 export async function HEAD() {
-  const response = new NextResponse(null);
-  return applyCorsHeaders(response);
+  return head();
 }
 
 export async function GET(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const testimonials = await db.getTestimonials('all');
-    return applyCorsHeaders(NextResponse.json(testimonials));
-  } catch (error) {
-    console.error('Error fetching testimonials:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to fetch testimonials' },
-      { status: 500 }
-    ));
-  }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
+
+  return ok(await db.getTestimonials('all'));
 }
 
 export async function POST(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const data = await request.json();
-    const newTestimonial = await db.createTestimonial(data);
-    
-    return applyCorsHeaders(NextResponse.json(newTestimonial, { status: 201 }));
-  } catch (error) {
-    console.error('Error creating testimonial:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to create testimonial' },
-      { status: 500 }
-    ));
-  }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
+
+  const body = await request.json();
+  const name = cleanString(body.name, 255);
+  const content = cleanText(body.content, 2000);
+  if (!name || !content) return fail('Name and content are required');
+
+  const created = await db.createTestimonial({
+    name,
+    company: cleanString(body.company, 255),
+    position: cleanString(body.position, 255),
+    content,
+    rating: Math.min(5, Math.max(1, Number(body.rating) || 5)),
+    status: ['pending', 'approved', 'rejected'].includes(body.status) ? body.status : 'pending',
+  });
+
+  return ok(created, 201);
 }
 
 export async function PUT(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const { id, ...updateData } = await request.json();
-    const updatedTestimonial = await db.updateTestimonial(id, updateData);
-    
-    if (!updatedTestimonial) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Testimonial not found' },
-        { status: 404 }
-      ));
-    }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
 
-    return applyCorsHeaders(NextResponse.json(updatedTestimonial));
-  } catch (error) {
-    console.error('Error updating testimonial:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to update testimonial' },
-      { status: 500 }
-    ));
-  }
+  const body = await request.json();
+  const id = parseId(body.id);
+  if (!id) return fail('Invalid testimonial id');
+
+  const updated = await db.updateTestimonial(id, {
+    name: body.name !== undefined ? cleanString(body.name, 255) : undefined,
+    company: body.company !== undefined ? cleanString(body.company, 255) : undefined,
+    position: body.position !== undefined ? cleanString(body.position, 255) : undefined,
+    content: body.content !== undefined ? cleanText(body.content, 2000) : undefined,
+    rating: body.rating !== undefined ? Math.min(5, Math.max(1, Number(body.rating) || 5)) : undefined,
+    status: body.status !== undefined ? (['pending', 'approved', 'rejected'].includes(body.status) ? body.status : 'pending') : undefined,
+  });
+
+  if (!updated) return fail('Testimonial not found', 404);
+  return ok(updated);
 }
 
 export async function DELETE(request) {
-  try {
-    // Check for admin session cookie
-    const sessionToken = request.cookies.get('admin_session');
-    
-    if (!sessionToken || !isValidSession(sessionToken.value)) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      ));
-    }
+  const authError = requireAdmin(request);
+  if (authError) return authError;
 
-    await initializeDatabase();
-    const { id } = await request.json();
-    const deleted = await db.deleteTestimonial(id);
-    
-    if (!deleted) {
-      return applyCorsHeaders(NextResponse.json(
-        { error: 'Testimonial not found' },
-        { status: 404 }
-      ));
-    }
+  const initialized = await initializeDatabase();
+  if (!initialized) return fail('Database unavailable', 503);
 
-    return applyCorsHeaders(NextResponse.json({ message: 'Testimonial deleted successfully' }));
-  } catch (error) {
-    console.error('Error deleting testimonial:', error);
-    return applyCorsHeaders(NextResponse.json(
-      { error: 'Failed to delete testimonial' },
-      { status: 500 }
-    ));
-  }
+  const body = await request.json();
+  const id = parseId(body.id);
+  if (!id) return fail('Invalid testimonial id');
+
+  const deleted = await db.deleteTestimonial(id);
+  if (!deleted) return fail('Testimonial not found', 404);
+
+  return ok({ success: true });
 }

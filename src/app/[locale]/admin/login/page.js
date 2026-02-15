@@ -133,8 +133,7 @@ export default function AdminLogin() {
 
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground text-center">
-                Demo Credentials:<br />
-                <span className="font-mono font-semibold">admin / admin123</span>
+                Configure `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` in your environment.
               </p>
             </div>
           </CardContent>

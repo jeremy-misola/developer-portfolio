@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { validateAdminCredentials, generateSessionToken, addActiveSession } from '@/lib/admin';
+import { validateAdminCredentials, generateSessionToken, addActiveSession, removeActiveSession } from '@/lib/admin';
 import { applyCorsHeaders, createPreflightResponse } from '@/lib/cors';
 
 // Handle CORS preflight
@@ -28,12 +28,18 @@ export async function POST(request) {
 
     if (!isValid) {
       return applyCorsHeaders(NextResponse.json(
-        { error: 'Invalid credentials' },
+        { error: 'Invalid credentials or missing admin environment configuration' },
         { status: 401 }
       ));
     }
 
     const sessionToken = generateSessionToken();
+    if (!sessionToken) {
+      return applyCorsHeaders(NextResponse.json(
+        { error: 'Admin session secret is missing or invalid' },
+        { status: 500 }
+      ));
+    }
     
     // Add session to active sessions
     addActiveSession(sessionToken);
