@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed-initial-data.mjs"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",

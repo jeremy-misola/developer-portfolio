@@ -37,6 +37,8 @@ export default function AdminDashboard() {
     fetchRecentActivity();
   }, [locale]);
 
+  const ensureArray = (value) => (Array.isArray(value) ? value : []);
+
   const fetchStats = async () => {
     try {
       const [testimonialsRes, projectsRes, experienceRes] = await Promise.all([
@@ -45,9 +47,9 @@ export default function AdminDashboard() {
         fetch('/api/admin/experience')
       ]);
 
-      const testimonials = await testimonialsRes.json();
-      const projects = await projectsRes.json();
-      const experience = await experienceRes.json();
+      const testimonials = ensureArray(await testimonialsRes.json());
+      const projects = ensureArray(await projectsRes.json());
+      const experience = ensureArray(await experienceRes.json());
 
       setStats({
         testimonials: {
@@ -71,9 +73,9 @@ export default function AdminDashboard() {
 
   const fetchRecentActivity = async () => {
     try {
-      const testimonials = await fetch('/api/admin/testimonials').then(res => res.json());
-      const projects = await fetch('/api/admin/projects').then(res => res.json());
-      const experience = await fetch('/api/admin/experience').then(res => res.json());
+      const testimonials = ensureArray(await fetch('/api/admin/testimonials').then(res => res.json()));
+      const projects = ensureArray(await fetch('/api/admin/projects').then(res => res.json()));
+      const experience = ensureArray(await fetch('/api/admin/experience').then(res => res.json()));
 
       const activities = [
         ...testimonials.map(t => ({
