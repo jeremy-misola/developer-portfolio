@@ -1,24 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import {
-  Briefcase,
-  Calendar,
-  Clock,
-  CheckCircle,
-  Tag,
-  ExternalLink,
-} from "lucide-react";
+import { Briefcase, Calendar, Clock, CheckCircle, Tag } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 
 function Experience() {
@@ -32,7 +16,6 @@ function Experience() {
       try {
         const response = await fetch("/api/experience");
         const data = await response.json();
-        // Ensure experience is always an array
         setExperience(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching experience:", error);
@@ -47,7 +30,7 @@ function Experience() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long' });
+    return date.toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short' });
   };
 
   const getStatusBadge = (startDate, endDate) => {
@@ -57,35 +40,39 @@ function Experience() {
 
     if (!end || end > now) {
       return (
-        <Badge variant="secondary" className="bg-blue-500 hover:bg-blue-600">
+        <Badge variant="default" className="bg-sky-500/85 text-white">
           <Clock className="h-3 w-3 mr-1" />
           {locale === 'fr' ? 'Actuel' : 'Current'}
         </Badge>
       );
-    } else if (start > now) {
+    }
+
+    if (start > now) {
       return (
-        <Badge variant="outline" className="bg-yellow-500 hover:bg-yellow-600">
+        <Badge variant="default" className="bg-amber-500/85 text-white">
           <Calendar className="h-3 w-3 mr-1" />
-          {locale === 'fr' ? 'À venir' : 'Upcoming'}
-        </Badge>
-      );
-    } else {
-      return (
-        <Badge variant="default" className="bg-green-500 hover:bg-green-600">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          {locale === 'fr' ? 'Terminé' : 'Completed'}
+          {locale === 'fr' ? 'A venir' : 'Upcoming'}
         </Badge>
       );
     }
+
+    return (
+      <Badge variant="default" className="bg-emerald-500/85 text-white">
+        <CheckCircle className="h-3 w-3 mr-1" />
+        {locale === 'fr' ? 'Termine' : 'Completed'}
+      </Badge>
+    );
   };
 
   if (loading) {
     return (
-      <section id="experience" className="py-20 bg-gradient-to-b from-background to-muted/30">
+      <section id="experience" className="section-shell">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">{t("title")}</h2>
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="glass-panel chrome-stroke micro-reveal rounded-3xl p-7 sm:p-8 text-center">
+            <h2 className="section-title">{t("title")}</h2>
+            <div className="mt-8 flex justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -93,151 +80,65 @@ function Experience() {
   }
 
   return (
-    <section id="experience" className="py-20 bg-gradient-to-b from-background to-muted/30">
+    <section id="experience" className="section-shell">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold tracking-tight mb-4">
-            {t("title")}
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="mb-8 px-1">
+          <p className="section-kicker">{locale === 'fr' ? 'Parcours' : 'Career Path'}</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="section-subtitle">
             {locale === 'fr'
-              ? "Mon parcours dans les technologies DevOps et cloud-native, des stages aux rôles à temps plein."
-              : "My journey in DevOps and cloud-native technologies, from internships to full-time roles."}
+              ? "Mon evolution dans le DevOps et le cloud-native."
+              : "My progression through DevOps and cloud-native roles."}
           </p>
-        </motion.div>
+        </div>
 
         {experience.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            {locale === 'fr' ? "Aucune donnée d'expérience disponible pour le moment." : "No experience data available at the moment."}
+          <div className="glass-panel chrome-stroke rounded-3xl p-10 text-center text-muted-foreground">
+            {locale === 'fr' ? "Aucune experience disponible." : "No experience data available."}
           </div>
         ) : (
-          <motion.div
-            className="space-y-8"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
-          >
-            {experience.map((exp, index) => (
-              <motion.div
-                key={exp.id}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      type: "spring",
-                      stiffness: 100,
-                      damping: 12,
-                    },
-                  },
-                }}
-                whileHover={{ scale: 1.01 }}
-                className="group"
-              >
-                <Card className="h-full flex flex-col border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
-                  {/* Timeline indicator */}
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  <CardHeader className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15">
-                            <Briefcase className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
-                              {locale === 'fr' ? exp.position_fr : exp.position_en || exp.position}
-                            </CardTitle>
-                            <CardDescription className="text-lg font-semibold text-muted-foreground">
-                              {exp.company}
-                            </CardDescription>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {getStatusBadge(exp.startDate, exp.endDate)}
-                          <Badge variant="outline" className="text-sm">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : t("present")}
-                          </Badge>
-                        </div>
+          <div className="bento-grid">
+            {experience.map((exp, index) => {
+              const spanClass = index % 3 === 0 ? "md:col-span-4" : "md:col-span-2";
+              return (
+                <article
+                  key={exp.id}
+                  className={`glass-panel chrome-stroke interactive-panel micro-reveal rounded-3xl p-4 sm:p-6 ${spanClass}`}
+                  style={{ animationDelay: `${Math.min(index * 80, 360)}ms` }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary">
+                        <Briefcase className="h-5 w-5" />
                       </div>
+                      <h3 className="mt-4 text-xl sm:text-2xl font-black tracking-tight">
+                        {locale === 'fr' ? exp.position_fr : exp.position_en || exp.position}
+                      </h3>
+                      <p className="text-muted-foreground mt-1">{exp.company}</p>
                     </div>
+                    {getStatusBadge(exp.startDate, exp.endDate)}
+                  </div>
 
-                    <CardDescription className="text-base leading-relaxed">
-                      {locale === 'fr' ? exp.description_fr : exp.description_en || exp.description}
-                    </CardDescription>
-                  </CardHeader>
+                  <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    {locale === 'fr' ? exp.description_fr : exp.description_en || exp.description}
+                  </p>
 
-                  <CardContent className="space-y-4">
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-2">
-                      {exp.technologies.map((tech, techIndex) => (
-                        <Badge key={techIndex} variant="secondary" className="text-sm">
-                          <Tag className="h-3 w-3 mr-1" />
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    {/* Achievements */}
-                    {exp.achievements && exp.achievements.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
-                          {locale === 'fr' ? 'Principales Réalisations' : 'Key Achievements'}
-                        </h4>
-                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                          {(locale === 'fr' ? exp.achievements_fr : exp.achievements_en || exp.achievements).map((achievement, achievementIndex) => (
-                            <li key={achievementIndex}>{achievement}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="flex items-center gap-2"
-                      >
-                        <a href="#about" target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                          {locale === 'fr' ? 'Voir le CV' : 'View Resume'}
-                        </a>
-                      </Button>
-                    </div>
-
-                    {/* Metadata */}
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>
-                        {locale === 'fr' ? 'Ajouté le' : 'Added'}: {new Date(exp.createdAt).toLocaleDateString(locale)}
-                      </span>
-                      {exp.updatedAt && (
-                        <span>
-                          {locale === 'fr' ? 'Mis à jour le' : 'Updated'}: {new Date(exp.updatedAt).toLocaleDateString(locale)}
-                        </span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
+                  <div className="mt-3.5 sm:mt-4 flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : t("present")}
+                    </Badge>
+                    {exp.technologies?.map((tech, techIndex) => (
+                      <Badge key={techIndex} variant="secondary" className="text-xs">
+                        <Tag className="h-3 w-3 mr-1" />
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         )}
       </div>
     </section>

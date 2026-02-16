@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { ArrowDownRight, Github, Linkedin, FileDown } from 'lucide-react';
 
 export default function ProfileHero() {
   const locale = useLocale();
@@ -27,32 +28,57 @@ export default function ProfileHero() {
     : settings?.bio_en || settings?.bio_fr;
 
   return (
-    <section id="hero" className="py-20 sm:py-28">
-      <div className="container mx-auto px-4 text-center">
-        <p className="text-muted-foreground uppercase tracking-[0.3em] text-sm">
-          {settings?.fullName || 'Portfolio'}
-        </p>
-        <h1 className="mt-4 text-4xl sm:text-6xl font-bold tracking-tight">{headline || 'Professional Portfolio'}</h1>
-        <p className="max-w-3xl mx-auto mt-6 text-lg text-muted-foreground">{bio || 'Manage your profile content from the admin panel.'}</p>
+    <section id="hero" className="section-shell pt-10 sm:pt-14">
+      <div className="container mx-auto px-4">
+        <div className="bento-grid">
+          <article className="glass-panel chrome-stroke interactive-panel micro-reveal rounded-3xl p-5 sm:p-8 md:col-span-4" style={{ animationDelay: '60ms' }}>
+            <p className="section-kicker">{settings?.fullName || 'Portfolio'}</p>
+            <h1 className="mt-4 text-4xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight">
+              <span className="kinetic-heading">{headline || 'Professional Portfolio'}</span>
+            </h1>
+            <p className="section-subtitle max-w-2xl">{bio || 'Manage your profile content from the admin panel.'}</p>
 
-        <div className="mt-8 flex flex-wrap gap-3 justify-center">
-          {settings?.resumeUrl && (
-            <Button asChild>
-              <a href={settings.resumeUrl} target="_blank" rel="noreferrer">
-                {locale === 'fr' ? 'Telecharger le CV' : 'Download Resume'}
-              </a>
-            </Button>
-          )}
-          {settings?.linkedinUrl && (
-            <Button variant="outline" asChild>
-              <a href={settings.linkedinUrl} target="_blank" rel="noreferrer">LinkedIn</a>
-            </Button>
-          )}
-          {settings?.githubUrl && (
-            <Button variant="outline" asChild>
-              <a href={settings.githubUrl} target="_blank" rel="noreferrer">GitHub</a>
-            </Button>
-          )}
+            <div className="mt-7 flex flex-wrap gap-2.5 sm:gap-3">
+              <Button asChild>
+                <a href="#projects">
+                  {locale === 'fr' ? 'Voir les projets' : 'View Projects'} <ArrowDownRight className="h-4 w-4" />
+                </a>
+              </Button>
+              {settings?.resumeUrl && (
+                <Button variant="outline" asChild>
+                  <a href={settings.resumeUrl} target="_blank" rel="noreferrer">
+                    <FileDown className="h-4 w-4" /> {locale === 'fr' ? 'CV' : 'Resume'}
+                  </a>
+                </Button>
+              )}
+            </div>
+          </article>
+
+          <aside className="glass-panel chrome-stroke interactive-panel micro-reveal rounded-3xl p-5 sm:p-8 md:col-span-2" style={{ animationDelay: '140ms' }}>
+            <p className="section-kicker">{locale === 'fr' ? 'Connecter' : 'Connect'}</p>
+            <h2 className="mt-3 text-2xl font-black tracking-tight">
+              {locale === 'fr' ? 'Liens rapides' : 'Quick Links'}
+            </h2>
+            <div className="mt-5 space-y-2.5 sm:space-y-3">
+              {settings?.linkedinUrl && (
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <a href={settings.linkedinUrl} target="_blank" rel="noreferrer">
+                    <Linkedin className="h-4 w-4" /> LinkedIn
+                  </a>
+                </Button>
+              )}
+              {settings?.githubUrl && (
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <a href={settings.githubUrl} target="_blank" rel="noreferrer">
+                    <Github className="h-4 w-4" /> GitHub
+                  </a>
+                </Button>
+              )}
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <a href="#contact">{locale === 'fr' ? 'Contacter' : 'Contact Me'}</a>
+              </Button>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

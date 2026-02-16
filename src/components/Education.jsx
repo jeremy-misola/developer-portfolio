@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export default function Education() {
   const locale = useLocale();
@@ -27,24 +27,35 @@ export default function Education() {
   };
 
   return (
-    <section id="education" className="py-16">
+    <section id="education" className="section-shell">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-semibold">{locale === 'fr' ? 'Education' : 'Education'}</h2>
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          {education.map((item) => (
-            <Card key={item.id}>
-              <CardHeader>
-                <CardTitle>{item.school}</CardTitle>
-                <p className="text-sm text-muted-foreground">{item.location}</p>
-              </CardHeader>
-              <CardContent>
-                <p className="font-medium">{locale === 'fr' ? item.degree_fr : item.degree_en}</p>
-                <p className="text-sm text-muted-foreground mt-1">{formatDate(item.startDate)} - {formatDate(item.endDate)}</p>
-                <p className="text-sm text-muted-foreground mt-3">
-                  {locale === 'fr' ? item.description_fr : item.description_en}
-                </p>
-              </CardContent>
-            </Card>
+        <div className="mb-8 px-1">
+          <p className="section-kicker">{locale === 'fr' ? 'Apprentissage' : 'Learning'}</p>
+          <h2 className="section-title section-title-serif">{locale === 'fr' ? 'Education' : 'Education'}</h2>
+        </div>
+
+        <div className="bento-grid">
+          {education.map((item, index) => (
+            <article
+              key={item.id}
+              className={`glass-panel chrome-stroke interactive-panel micro-reveal rounded-3xl p-4 sm:p-6 ${index % 3 === 0 ? 'md:col-span-4' : 'md:col-span-2'}`}
+              style={{ animationDelay: `${Math.min(index * 80, 340)}ms` }}
+            >
+              <h3 className="text-xl font-black tracking-tight">{item.school}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{item.location}</p>
+
+              <p className="mt-4 font-semibold text-base">
+                {locale === 'fr' ? item.degree_fr : item.degree_en}
+              </p>
+
+              <Badge variant="outline" className="mt-3 text-xs">
+                {formatDate(item.startDate)} - {formatDate(item.endDate)}
+              </Badge>
+
+              <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
+                {locale === 'fr' ? item.description_fr : item.description_en}
+              </p>
+            </article>
           ))}
         </div>
       </div>

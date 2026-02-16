@@ -25,29 +25,36 @@ export default function Header() {
     { href: `${basePath}#hobbies`, label: locale === 'fr' ? 'Loisirs' : 'Hobbies' },
     { href: `${basePath}#testimonials`, label: locale === 'fr' ? 'Temoignages' : 'Testimonials' },
     { href: `${basePath}/contact`, label: locale === 'fr' ? 'Contact' : 'Contact' },
-    { href: `${basePath}/admin`, label: 'Admin' },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
-      <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-4">
-        <a href={basePath} className="font-semibold">Portfolio</a>
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
+      <div className="chrome-stroke glass-panel micro-reveal container mx-auto rounded-2xl px-3.5 sm:px-6">
+        <div className="h-14 flex items-center justify-between gap-4">
+          <a href={basePath} className="tap-scale text-sm sm:text-base font-black tracking-tight uppercase">
+            Portfolio
+          </a>
 
-        <nav className="hidden md:flex items-center gap-4 text-sm">
-          {links.map((link) => (
-            <a key={link.href} href={link.href} className="hover:text-primary">
-              {link.label}
-            </a>
-          ))}
-        </nav>
+          <nav className="hidden lg:flex items-center gap-2 text-sm">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="tap-scale rounded-full px-3 py-1.5 text-muted-foreground transition-colors hover:bg-secondary/70 hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher />
-          <Switch
-            checked={theme === 'dark'}
-            onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            aria-label="Toggle theme"
-          />
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Switch
+              checked={theme === 'dark'}
+              onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              aria-label="Toggle theme"
+            />
+          </div>
         </div>
       </div>
     </header>

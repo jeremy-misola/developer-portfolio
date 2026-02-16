@@ -19,15 +19,26 @@ export default function Skills() {
   }, []);
 
   return (
-    <section id="skills" className="py-16">
+    <section id="skills" className="section-shell">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-semibold">{locale === 'fr' ? 'Competences' : 'Skills'}</h2>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <Badge key={skill.id} variant="secondary" className="py-2 px-3">
-              {locale === 'fr' ? skill.name_fr : skill.name_en}
-            </Badge>
-          ))}
+        <div className="glass-panel chrome-stroke interactive-panel micro-reveal rounded-3xl p-5 sm:p-8">
+          <p className="section-kicker">{locale === 'fr' ? 'Boite a outils' : 'Toolkit'}</p>
+          <h2 className="section-title">
+            <span className="section-title-serif">{locale === 'fr' ? 'Competences' : 'Skills'}</span>
+          </h2>
+
+          <div className="mt-5 sm:mt-6 flex flex-wrap gap-2 sm:gap-3">
+            {skills.map((skill, index) => (
+              <Badge
+                key={skill.id}
+                variant="outline"
+                className="tap-scale micro-reveal px-3 py-1.5 text-xs sm:text-sm font-semibold bg-background/50"
+                style={{ animationDelay: `${index * 35}ms` }}
+              >
+                {locale === 'fr' ? skill.name_fr : skill.name_en}
+              </Badge>
+            ))}
+          </div>
         </div>
       </div>
     </section>

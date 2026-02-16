@@ -166,15 +166,18 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="glass-panel chrome-stroke micro-reveal rounded-3xl p-5 sm:p-7 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+          <p className="section-kicker">Control Center</p>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight mt-2">
+            <span className="kinetic-heading">Admin Dashboard</span>
+          </h1>
           <p className="text-muted-foreground">Overview of your portfolio content and recent activity</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={fetchStats} variant="outline">
+          <Button onClick={fetchStats} variant="outline" className="tap-scale">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh Stats
           </Button>
@@ -182,19 +185,20 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="bento-grid">
         {statCards.map((stat, index) => (
           <motion.div
             key={stat.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            className={index === 0 ? "md:col-span-2 lg:col-span-2" : "md:col-span-3 lg:col-span-2"}
           >
-            <Card className="h-full">
+            <Card className="h-full interactive-panel">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-r ${stat.color} text-white`}>
+                    <div className={`p-2 rounded-xl bg-gradient-to-r ${stat.color} text-white shadow-md`}>
                       <stat.icon className="h-6 w-6" />
                     </div>
                     <div>
@@ -216,14 +220,14 @@ export default function AdminDashboard() {
                     </Badge>
                   ))}
                 </div>
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-2 flex-wrap">
                   {stat.actions.map((action, idx) => (
                     <Button
                       key={idx}
                       variant="outline"
                       size="sm"
                       onClick={() => window.location.href = action.href}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 tap-scale"
                     >
                       <action.icon className="h-4 w-4" />
                       {action.label}
@@ -237,8 +241,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+      <div className="bento-grid">
+        <Card className="md:col-span-4 interactive-panel">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <Calendar className="h-5 w-5" />
@@ -254,9 +258,9 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div key={activity.id} className="flex items-center justify-between p-3.5 border border-border/60 rounded-xl bg-background/40 hover:bg-muted/50 transition-colors">
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-muted rounded-lg">
+                      <div className="p-2 bg-muted/70 rounded-lg">
                         <activity.icon className="h-4 w-4" />
                       </div>
                       <div>
@@ -280,22 +284,22 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
+        <Card className="md:col-span-2 interactive-panel">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>Common tasks you might need to perform</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid gap-2">
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/testimonials`}>
+              <Button variant="outline" className="justify-start tap-scale" onClick={() => window.location.href = `/${locale}/admin/testimonials`}>
                 <Users className="h-4 w-4 mr-2" />
                 Review Pending Testimonials ({stats.testimonials.pending})
               </Button>
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/projects`}>
+              <Button variant="outline" className="justify-start tap-scale" onClick={() => window.location.href = `/${locale}/admin/projects`}>
                 <FolderKanban className="h-4 w-4 mr-2" />
                 Manage Projects
               </Button>
-              <Button variant="outline" className="justify-start" onClick={() => window.location.href = `/${locale}/admin/experience`}>
+              <Button variant="outline" className="justify-start tap-scale" onClick={() => window.location.href = `/${locale}/admin/experience`}>
                 <Briefcase className="h-4 w-4 mr-2" />
                 Update Experience
               </Button>
